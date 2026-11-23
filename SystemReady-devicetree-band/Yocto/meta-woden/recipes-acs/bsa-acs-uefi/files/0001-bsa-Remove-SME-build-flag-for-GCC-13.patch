@@ -1,3 +1,5 @@
+Upstream-Status: Inappropriate [local GCC 13 compatibility workaround]
+
 diff --git a/apps/uefi/Bsa.inf b/apps/uefi/Bsa.inf
 index a50c841..a3d8957 100644
 --- a/apps/uefi/Bsa.inf

@@ -4,6 +4,7 @@ Date: Fri, 15 Sep 2023 19:20:48 +0530
 Subject: [PATCH] UpdateVar updates for SecureBoot automatic provision
 
 Signed-off-by: gurrev01 <gururaj.revankar@arm.com>
+Upstream-Status: Inappropriate [OE-specific cross-compilation and provisioning changes]
 ---
  Make.rules    |  17 ++++----
  Makefile      | 113 +-------------------------------------------------

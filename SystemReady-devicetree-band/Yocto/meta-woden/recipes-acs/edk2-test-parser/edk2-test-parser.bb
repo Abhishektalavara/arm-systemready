@@ -1,6 +1,6 @@
 LICENSE = "BSD-2-Clause"
 LIC_FILES_CHKSUM = "file://edk2-test-parser/LICENSE;md5=c0550be4b3b9c0223efd0eaa70dc9085"
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 SRC_URI = "git://git.gitlab.arm.com/systemready/edk2-test-parser.git;destsuffix=edk2-test-parser;protocol=https;branch=main;name=edk2-test-parser \
 "

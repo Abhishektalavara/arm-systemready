@@ -4,7 +4,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 inherit deploy
 DEPENDS = "ebbr-sct pfdi-acs bsa-acs systemready-scripts bsa-acs-drv edk2-test-parser fwts linux-yocto"
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 SRC_URI = " file://bsa.nsh \
             file://pfdi.nsh \
@@ -39,7 +39,7 @@ do_deploy() {
    cp bbsr_startup.nsh ${DEPLOYDIR}/
    cp acs_config_dt.txt ${DEPLOYDIR}/acs_config.txt
    cp system_config_dt.txt ${DEPLOYDIR}/system_config.txt
-   cp ${S}/../../../armv8a-oe-linux/ebbr-sct/1.0/bbr-acs/bbsr/config/BBSRStartup.nsh  ${DEPLOYDIR}/bbsr_SctStartup.nsh
+   cp ${WORKDIR}/../../../armv8a-oe-linux/ebbr-sct/1.0/sources/bbr-acs/bbsr/config/BBSRStartup.nsh ${DEPLOYDIR}/bbsr_SctStartup.nsh
 
    # create and copy necessary flags to deploy directory
    touch bsa_dt.flag yocto_image.flag

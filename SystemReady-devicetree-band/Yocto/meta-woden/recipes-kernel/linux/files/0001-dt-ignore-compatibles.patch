@@ -7,6 +7,8 @@ Add known bus/container compatible strings to the Devicetree kselftest
 ignore list. These nodes are not expected to bind to standalone device
 drivers and should not be reported as unprobed devices.
 
+Upstream-Status: Inappropriate [SystemReady-specific test expectations]
+
 Signed-off-by: Abhishek Talavara <Abhishek.Talavara@arm.com>
 ---
  tools/testing/selftests/dt/compatible_ignore_list | 6 ++++++

@@ -1,3 +1,5 @@
+Upstream-Status: Inappropriate [SystemReady-specific version banner]
+
 diff --git a/apps/uefi/bsa_main.c b/apps/uefi/bsa_main.c
 index 6f473d9..7dd50b3 100644
 --- a/apps/uefi/bsa_main.c

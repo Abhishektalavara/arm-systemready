@@ -7,7 +7,7 @@ SRC_URI = "git://github.com/ARM-software/sysarch-acs;destsuffix=sysarch-acs;prot
 "
 SRCREV_sysarch-acs = "${AUTOREV}"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_compile() {

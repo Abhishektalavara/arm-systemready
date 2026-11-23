@@ -54,32 +54,8 @@ git init
 kas checkout kas/woden.yml
 popd
 
-customise_image()
-{
-    #Remove the root login prompt after the startup
-    sed -i 's/ExecStart=.*/ExecStart=\-\/sbin\/agetty \-a root \-8 \-L \--keep-baud \%I \@BAUDRATE\@ \$TERM/' $TOP_DIR/meta-woden/poky/meta/recipes-core/systemd/systemd-serialgetty/serial-getty@.service
-
-}
-
-
 copy_recipes()
 {
-
-    #grub-2.06 config to workaround secureboot issue seen with 2.12
-    pushd $TOP_DIR/meta-woden/poky/meta/recipes-bsp
-    git checkout 0a010ac1b46651aaaf57008fb9e6db656822b2e4 -- grub
-    popd
-
-    #Adding build option to grub that is required for SecureBoot
-    sed -i 's/\/grub\-core\//\/grub\-core\/\ --disable-shim-lock/g' $TOP_DIR/meta-woden/poky/meta/recipes-bsp/grub/grub-efi_2.06.bb
-
-    #Remove the existing recipe
-    rm $TOP_DIR/meta-woden/poky/meta/recipes-kernel/linux/linux-yocto_6.6.bb
-
-    #Increase the initramfs size to hold more storage drivers in ACS image
-    sed -i 's/INITRAMFS_MAXSIZE ??= "131072"/INITRAMFS_MAXSIZE ??= "256000"/' $TOP_DIR/meta-woden/poky/meta/conf/bitbake.conf
-
-
     #copy linux_yocto.bbappend with empty defconfig
     cp $TOP_DIR/config/linux-yocto_%.bbappend $TOP_DIR/meta-woden/meta-arm/meta-arm/recipes-kernel/linux/linux-yocto_%.bbappend
 
@@ -168,4 +144,3 @@ copy_recipes()
 }
 
 copy_recipes
-customise_image

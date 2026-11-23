@@ -1,6 +1,6 @@
 LICENSE = "BSD-2-Clause"
 LIC_FILES_CHKSUM = "file://systemready-scripts/LICENSE;md5=85b7d439a311c22626c2e3f05daf628e"
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 SRC_URI = "git://git.gitlab.arm.com/systemready/systemready-scripts.git;destsuffix=systemready-scripts;protocol=https;branch=master;name=systemready-scripts \
 "

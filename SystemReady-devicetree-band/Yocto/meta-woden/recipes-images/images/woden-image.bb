@@ -3,6 +3,7 @@ inherit core-image
 COMPATIBLE_HOST = "aarch64.*-linux"
 
 WKS_FILE = "woden.wks.in"
+WIC_IMAGE = "${IMGDEPLOYDIR}/${IMAGE_NAME}.wic"
 
 # Minimal install, don't pull in packagegroup-base
 IMAGE_INSTALL = "packagegroup-core-boot \
@@ -58,7 +59,7 @@ DEPENDS += "sbsigntool-native"
 do_sign_images() {
     rm -rf DO_SIGN
     mkdir DO_SIGN
-    wic cp ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/ DO_SIGN/
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${WIC_IMAGE}:1/ DO_SIGN/
 
     KEYS_DIR="DO_SIGN/acs_tests/bbsr-keys"
     echo "KEYS_DIR = $KEYS_DIR"
@@ -86,42 +87,41 @@ do_sign_images() {
     fi
 
     echo "Signing images complete."
-    wic cp DO_SIGN/EFI ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/
-    wic cp DO_SIGN/Image ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} DO_SIGN/EFI ${WIC_IMAGE}:1/
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} DO_SIGN/Image ${WIC_IMAGE}:1/
 
     # Copy signed EFI binaries back to deploy directory
-    wic cp DO_SIGN/acs_tests ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} DO_SIGN/acs_tests ${WIC_IMAGE}:1/
     echo "Copy back complete"
 }
 
 
 do_dir_deploy() {
-
     # copying bbr directory to /boot partition
     mkdir -p acs_tests
-    wic cp acs_tests ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/
-    wic cp ${DEPLOY_DIR_IMAGE}/bbr ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/acs_tests/
-    wic cp ${DEPLOY_DIR_IMAGE}/bbsr-keys ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/acs_tests/
-    wic cp ${DEPLOY_DIR_IMAGE}/core-image-initramfs-boot-genericarm64.cpio.gz ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} acs_tests ${WIC_IMAGE}:1/
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${DEPLOY_DIR_IMAGE}/bbr ${WIC_IMAGE}:1/acs_tests/
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${DEPLOY_DIR_IMAGE}/bbsr-keys ${WIC_IMAGE}:1/acs_tests/
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${DEPLOY_DIR_IMAGE}/core-image-initramfs-boot-genericarm64.cpio.gz ${WIC_IMAGE}:1/
     # Copy commit file to /acs_tests
-    wic cp ${SYSTEMREADY_COMMIT_LOG} ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/acs_tests/
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${SYSTEMREADY_COMMIT_LOG} ${WIC_IMAGE}:1/acs_tests/
 
     do_sign_images;
 
-    wic rm ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/acs_tests/bbsr-keys/*.crt
-    wic rm ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/acs_tests/bbsr-keys/*.esl
-    wic rm ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/acs_tests/bbsr-keys/*.key
+    wic rm --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${WIC_IMAGE}:1/acs_tests/bbsr-keys/*.crt
+    wic rm --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${WIC_IMAGE}:1/acs_tests/bbsr-keys/*.esl
+    wic rm --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${WIC_IMAGE}:1/acs_tests/bbsr-keys/*.key
 
     # create and copy empty acs_results_template directory to /results partition
     mkdir -p acs_results_template/acs_results
     mkdir -p acs_results_template/os-logs
     mkdir -p acs_results_template/fw
-    wic cp acs_results_template ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} acs_results_template ${WIC_IMAGE}:1/
 
     #add bsa/bbr bootloder entry and set it has default boot
 
-    wic cp ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/EFI/BOOT/grub.cfg grub.cfg
-    wic cp ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/EFI/BOOT/grub.cfg ${DEPLOY_DIR_IMAGE}/grub2.cfg
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${WIC_IMAGE}:1/EFI/BOOT/grub.cfg grub.cfg
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${WIC_IMAGE}:1/EFI/BOOT/grub.cfg ${DEPLOY_DIR_IMAGE}/grub2.cfg
 
     LINUX_BOOT_CMD_TEMP=`grep -Po 'Image\s+[a-zA-Z]+=.*' < grub.cfg`
     LINUX_BOOT_CMD=`echo $LINUX_BOOT_CMD_TEMP | head -1`
@@ -156,7 +156,7 @@ do_dir_deploy() {
         echo "menuentry 'SCMI Compliance' {linux /${LINUX_BOOT_CMD} scmi_acs; initrd /core-image-initramfs-boot-genericarm64.cpio.gz}" >> grub.cfg
     fi
 
-    wic cp grub.cfg ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/EFI/BOOT/grub.cfg
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} grub.cfg ${WIC_IMAGE}:1/EFI/BOOT/grub.cfg
 
     # update startup.nsh linux command with command from grub.cfg
     # since PARTUUID method is reliable
@@ -165,22 +165,22 @@ do_dir_deploy() {
     LINUX_BOOT_CMD1=$(echo "$LINUX_BOOT_CMD" | sed 's/Image/Image initrd=\\\\core-image-initramfs-boot-genericarm64.cpio.gz/')
     echo "LINUX_BOOT_CMD1=$LINUX_BOOT_CMD1"
 
-    wic cp ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/EFI/BOOT/startup.nsh startup.nsh
-    wic cp ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/EFI/BOOT/bbsr_startup.nsh bbsr_startup.nsh
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${WIC_IMAGE}:1/EFI/BOOT/startup.nsh startup.nsh
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${WIC_IMAGE}:1/EFI/BOOT/bbsr_startup.nsh bbsr_startup.nsh
 
     sed  -i -E 's/Image.*LABEL.*=.*/'"${LINUX_BOOT_CMD1} earlycon video=efifb:off"'/g' startup.nsh
     sed  -i -E 's/Image.*LABEL.*=.*/'"${LINUX_BOOT_CMD1} earlycon video=efifb:off secureboot "'/g' bbsr_startup.nsh
 
-    wic cp startup.nsh ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/EFI/BOOT/startup.nsh
-    wic cp bbsr_startup.nsh ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/EFI/BOOT/bbsr_startup.nsh
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} startup.nsh ${WIC_IMAGE}:1/EFI/BOOT/startup.nsh
+    wic cp --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} bbsr_startup.nsh ${WIC_IMAGE}:1/EFI/BOOT/bbsr_startup.nsh
 
     # remove additional startup.nsh from /boot partition
-    wic rm ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.wic:1/startup.nsh
+    wic rm --vars "${STAGING_DIR}/${MACHINE}/imgdata/" -e "${IMAGE_BASENAME}" -n ${RECIPE_SYSROOT_NATIVE} ${WIC_IMAGE}:1/startup.nsh
 
 
 }
 
-IMAGE_FEATURES += "empty-root-password"
+IMAGE_FEATURES += "empty-root-password serial-autologin-root"
 IMAGE_INSTALL:append = "systemd-init-install \
                         pciutils \
                         python3-dtschema \
@@ -224,4 +224,17 @@ IMAGE_INSTALL:append = "systemd-init-install \
                         dosfstools \
 "
 
-addtask dir_deploy before do_populate_lic_deploy after do_image_complete
+do_image_wic[depends] += "bsa-acs:do_deploy \
+                          shell-app:do_deploy \
+                          uefi-apps:do_deploy \
+                          ledge-efi:do_deploy \
+                          update-vars:do_deploy \
+                          uefi-dump:do_deploy \
+                          ebbr-sct:do_deploy \
+                          bootfs-files:do_deploy \
+                          pfdi-acs:do_deploy \
+"
+
+IMAGE_CMD:wic:append () {
+    do_dir_deploy
+}

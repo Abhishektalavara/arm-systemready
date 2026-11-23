@@ -1,3 +1,5 @@
+Upstream-Status: Inappropriate [SystemReady-specific version banner]
+
 diff --git a/uefi-sct/SctPkg/TestInfrastructure/SCT/Drivers/StandardTest/StandardTest.c b/uefi-sct/SctPkg/TestInfrastructure/SCT/Drivers/StandardTest/StandardTest.c
 index 94cae289..5ecc0946 100644
 --- a/uefi-sct/SctPkg/TestInfrastructure/SCT/Drivers/StandardTest/StandardTest.c

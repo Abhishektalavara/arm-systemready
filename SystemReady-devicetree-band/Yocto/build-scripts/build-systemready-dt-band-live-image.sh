@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # @file
-# Copyright (c) 2021-2025, Arm Limited or its affiliates. All rights reserved.
+# Copyright (c) 2021-2026, Arm Limited or its affiliates. All rights reserved.
 # SPDX-License-Identifier : Apache-2.0
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,22 @@
 
 set -x
 TOP_DIR=`pwd`
+IMAGE_DIR=$TOP_DIR/meta-woden/build/tmp/deploy/images/genericarm64
 pushd $TOP_DIR/meta-woden
-kas shell kas/woden.yml --command "bitbake llvm-native && bitbake rust-native && bitbake glibc && bitbake glibc-locale && bitbake qemu-system-native && bitbake cargo-native && bitbake linux-yocto && bitbake woden-image"
+kas shell kas/woden.yml --command \
+    "bitbake llvm-native && bitbake rust-native && \
+    bitbake glibc && bitbake glibc-locale && \
+    bitbake qemu-system-native && bitbake cargo-native && \
+    bitbake linux-yocto && bitbake woden-image"
 if [ $? -eq 0 ]; then
-    if [ -f $TOP_DIR/meta-woden/build/tmp/deploy/images/genericarm64/woden-image-genericarm64.rootfs.wic ]; then
-      cd $TOP_DIR/meta-woden/build/tmp/deploy/images/genericarm64
-      rm systemready-dt_acs_live_image.wic.xz 2> /dev/null
-      cp woden-image-genericarm64.rootfs.wic systemready-dt_acs_live_image.wic
-      xz -T0 -z systemready-dt_acs_live_image.wic
-      echo "The built image is at $TOP_DIR/meta-woden/build/tmp/deploy/images/genericarm64/systemready-dt_acs_live_image.wic.xz"
+    if [ -f $IMAGE_DIR/woden-image-genericarm64.rootfs.wic.zst ]; then
+        cd $IMAGE_DIR
+        rm systemready-dt_acs_live_image.wic.xz 2> /dev/null
+        zstd -d -f --stdout woden-image-genericarm64.rootfs.wic.zst \
+            > systemready-dt_acs_live_image.wic
+        xz -T0 -z systemready-dt_acs_live_image.wic
+        echo "The built image is at $IMAGE_DIR/"\
+             "systemready-dt_acs_live_image.wic.xz"
     fi
 fi
 popd

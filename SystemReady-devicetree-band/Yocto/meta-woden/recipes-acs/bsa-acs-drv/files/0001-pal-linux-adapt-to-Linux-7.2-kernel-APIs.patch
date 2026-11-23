@@ -6,6 +6,8 @@ Subject: [PATCH] pal_linux: adapt to Linux 7.2 kernel APIs
 Linux 7.2 removes strncpy and struct device::dma_coherent. Use the string
 and DMA helpers supported by the current kernel API.
 
+Upstream-Status: Pending
+
 Signed-off-by: Sathisha S <Sathisha.Shivaramappa@arm.com>
 ---
  acs-drv/files/platform/pal_linux/files/src/pal_dma.c    | 3 ++-

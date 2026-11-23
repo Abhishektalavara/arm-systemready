@@ -1,6 +1,6 @@
 LICENSE = "CLOSED"
 inherit deploy autotools
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 SRC_URI = " git://git.code.sf.net/p/gnu-efi/code;destsuffix=gnu-efi;protocol=https;branch=master;name=gnu-efi  \
             git://git.kernel.org/pub/scm/linux/kernel/git/jejb/efitools.git;destsuffix=efitools;branch=master;protocol=https;name=efitools  \
@@ -32,9 +32,9 @@ do_configure() {
     export STAGING_INCDIR=${STAGING_INCDIR}/../..
     export TARGET_PREFIX=${TARGET_PREFIX}
     echo "efitools make clean"
-    make clean
+    make clean GNU_EFI_PATH="${S}/gnu-efi"
     echo "efitools make"
-    make
+    make GNU_EFI_PATH="${S}/gnu-efi"
 
 }
 do_compile[noexec] = "1"

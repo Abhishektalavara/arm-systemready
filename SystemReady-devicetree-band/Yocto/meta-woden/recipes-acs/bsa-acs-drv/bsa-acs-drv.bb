@@ -1,5 +1,5 @@
 SUMMARY = "BSA-ACS Linux driver"
-LICENSE = "GPLv2 & Apache-2.0"
+LICENSE = "GPL-2.0-only & Apache-2.0"
 LIC_FILES_CHKSUM = "file://sysarch-acs/LICENSE;md5=e1cd0b49f4875bd7fdf5b963f4b0a147 \
                     file://linux-acs/acs-drv/files/COPYING;md5=12f884d2ae1ff87c09e5b7ccc2c4ca7e \
 "
@@ -9,14 +9,14 @@ inherit module-base
 
 SRC_URI += "git://github.com/ARM-software/sysarch-acs;destsuffix=sysarch-acs;protocol=https;branch=main;name=sysarch-acs \
             git://git.gitlab.arm.com/linux-arm/linux-acs.git;destsuffix=linux-acs;protocol=https;branch=master;name=linux-acs \
-            file://0001-pal-linux-adapt-to-Linux-7.2-kernel-APIs.patch;patchdir=${WORKDIR}/linux-acs \
+            file://0001-pal-linux-adapt-to-Linux-7.2-kernel-APIs.patch;patchdir=${UNPACKDIR}/linux-acs \
             "
 SRCREV_FORMAT = "sysarch-acs_linux-acs"
 SRCREV_sysarch-acs = "${AUTOREV}"
 SRCREV_linux-acs = "${AUTOREV}"
 SYSTEMREADY_COMMIT_LOG ?= "${TOPDIR}/../recipes-acs/bootfs-files/files/systemready-commit.log"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 MODULE_NAME = "bsa_acs"
 
 do_configure(){
@@ -38,6 +38,9 @@ do_compile() {
     echo "" >> "${SYSTEMREADY_COMMIT_LOG}"
 
     export KERNEL_SRC=${STAGING_KERNEL_DIR}
+    export KCFLAGS="${DEBUG_PREFIX_MAP} \
+        -ffile-prefix-map=${STAGING_KERNEL_DIR}=${KERNEL_SRC_PATH} \
+        -ffile-prefix-map=${STAGING_KERNEL_BUILDDIR}=${KERNEL_SRC_PATH}"
     cd ${S}/linux-acs/acs-drv/files/
     ./linux_acs.sh bsa
 }

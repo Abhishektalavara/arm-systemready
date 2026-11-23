@@ -31,24 +31,24 @@ do_install:append() {
   echo "S is ${S}"
   install -d ${D}${systemd_unitdir}/system
   install -d ${D}${bindir}
-  install -m 0770 ${WORKDIR}/init.sh                             ${D}${bindir}
-  install -m 0770 ${WORKDIR}/negative_capsule_generation.sh      ${D}${bindir}
-  install -m 0770 ${WORKDIR}/../../ebbr-sct/1.0/bbr-acs/ebbr/config/ir_bbr_fwts_tests.ini ${D}${bindir}
-  install -m 0770 ${WORKDIR}/secure_init.sh                      ${D}${bindir}
-  install -m 0770 ${WORKDIR}/scmi_init.sh                        ${D}${bindir}
-  install -m 0770 ${WORKDIR}/../../ebbr-sct/1.0/bbr-acs/bbsr/config/bbsr_fwts_tests.ini   ${D}${bindir}
-  install -m 0644 ${WORKDIR}/acs_run-before-login-prompt.service ${D}${systemd_unitdir}/system
-  install -m 0770 ${WORKDIR}/verify_tpm_measurements.py          ${D}${bindir}
-  install -m 0770 ${WORKDIR}/extract_capsule_fw_version.py       ${D}${bindir}
-  install -m 0770 ${WORKDIR}/ethtool-test.py                     ${D}${bindir}
-  install -m 0770 ${WORKDIR}/read_write_check_blk_devices.py     ${D}${bindir}
-  install -m 0770 ${WORKDIR}/reserved_memory_map_checker.py      ${D}${bindir}
-  install -m 0770 ${WORKDIR}/device_driver_info.sh               ${D}${bindir}
-  install -m 0770 ${WORKDIR}/spin_table_checker.sh               ${D}${bindir}
-  install -m 0770 ${WORKDIR}/acs_https_network_boot.sh           ${D}${bindir}
-  install -m 0770 ${WORKDIR}/acs_network_boot_parser.sh          ${D}${bindir}
-  install -m 0770 ${WORKDIR}/capsule_ondisk_reporting_vars_check.py   ${D}${bindir}
-  install -m 0770 ${WORKDIR}/runtime_device_mapping_conflict_checker.py ${D}${bindir}
-  install -m 0770 ${WORKDIR}/dtb_alignment_test.py               ${D}${bindir}
-  cp -r ${WORKDIR}/log_parser                                    ${D}${bindir}/
+  install -m 0770 ${UNPACKDIR}/init.sh                             ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/negative_capsule_generation.sh      ${D}${bindir}
+  install -m 0770 ${RECIPE_SYSROOT}${datadir}/ebbr-sct/ir_bbr_fwts_tests.ini ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/secure_init.sh                      ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/scmi_init.sh                        ${D}${bindir}
+  install -m 0770 ${RECIPE_SYSROOT}${datadir}/ebbr-sct/bbsr_fwts_tests.ini ${D}${bindir}
+  install -m 0644 ${UNPACKDIR}/acs_run-before-login-prompt.service ${D}${systemd_unitdir}/system
+  install -m 0770 ${UNPACKDIR}/verify_tpm_measurements.py          ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/extract_capsule_fw_version.py       ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/ethtool-test.py                     ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/read_write_check_blk_devices.py     ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/reserved_memory_map_checker.py      ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/device_driver_info.sh               ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/spin_table_checker.sh               ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/acs_https_network_boot.sh           ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/acs_network_boot_parser.sh          ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/capsule_ondisk_reporting_vars_check.py ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/runtime_device_mapping_conflict_checker.py ${D}${bindir}
+  install -m 0770 ${UNPACKDIR}/dtb_alignment_test.py               ${D}${bindir}
+  cp -r ${UNPACKDIR}/log_parser                                    ${D}${bindir}/
 }

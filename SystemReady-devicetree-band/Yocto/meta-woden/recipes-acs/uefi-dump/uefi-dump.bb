@@ -12,12 +12,12 @@ COMPATIBLE_HOST = "aarch64.*-linux"
 
 EDK2_ARCH = "AARCH64"
 EDK2_PLATFORM = "MdeModule"
-EDK2_PLATFORM_DSC = "${WORKDIR}/bbr-acs/ebbr/uefi_app/UefiDump.dsc"
+EDK2_PLATFORM_DSC = "${UNPACKDIR}/bbr-acs/ebbr/uefi_app/UefiDump.dsc"
 
 SRC_URI += "git://github.com/ARM-software/bbr-acs;destsuffix=bbr-acs;protocol=https;branch=main;name=bbr-acs"
 SRCREV_bbr-acs = "${AUTOREV}"
 
-BBR_ACS_DIR = "${WORKDIR}/bbr-acs"
+BBR_ACS_DIR = "${UNPACKDIR}/bbr-acs"
 PACKAGES_PATH .= ":${BBR_ACS_DIR}"
 
 EDK2_EXTRA_BUILD = ""

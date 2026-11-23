@@ -10,7 +10,7 @@ PYPI_PACKAGE = "pylibfdt"
 
 SRC_URI[sha256sum] = "90c667c5adf44c6ab2f13bdc566598897784c7b781bed91064e7373bd270b778"
 
-S = "${WORKDIR}/pylibfdt-1.6.1"
+S = "${UNPACKDIR}/pylibfdt-1.6.1"
 
 DEPENDS += "python3-setuptools-scm-native swig-native"
 RDEPENDS_${PN} = ""

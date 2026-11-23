@@ -11,6 +11,8 @@ Boot Behavior".
 
 Relax the check to allow that case.
 
+Upstream-Status: Submitted [https://github.com/tianocore/edk2/pull/3263]
+
 Signed-off-by: Vincent Stehlé <vincent.stehle@...>
 ---
 

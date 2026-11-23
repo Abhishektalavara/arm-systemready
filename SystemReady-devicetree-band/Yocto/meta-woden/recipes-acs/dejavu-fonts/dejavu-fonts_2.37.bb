@@ -23,7 +23,7 @@ PV = "2.37"
 SRC_URI = "https://github.com/dejavu-fonts/dejavu-fonts/releases/download/version-2.37/dejavu-fonts-ttf-2.37.tar.bz2"
 SRC_URI[sha256sum] = "fa9ca4d13871dd122f61258a80d01751d603b4d3ee14095d65453b4e846e17d7"
 
-S = "${WORKDIR}/dejavu-fonts-ttf-${PV}"
+S = "${UNPACKDIR}/dejavu-fonts-ttf-${PV}"
 do_install() {
     # Create the target directory for fonts
     install -d ${D}${datadir}/fonts/dejavu

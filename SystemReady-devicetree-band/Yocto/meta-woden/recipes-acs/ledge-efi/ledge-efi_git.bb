@@ -7,10 +7,11 @@ SRC_URI = "git://gitlab.com/Linaro/trustedsubstrate/ts-testing.git;protocol=http
           "
 
 SRCREV = "${AUTOREV}"
-S = "${WORKDIR}/git"
 
 # Use host-side toolchain to emit a PE/COFF EFI application
-DEPENDS = "clang-native"
+DEPENDS = "clang-native lld-native"
+
+do_configure[noexec] = "1"
 
 do_compile() {
     oe_runmake -j1 -C ${S}/efi_app

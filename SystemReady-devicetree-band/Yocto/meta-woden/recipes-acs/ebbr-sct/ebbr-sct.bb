@@ -21,7 +21,7 @@ SRC_URI += "git://github.com/ARM-software/bbr-acs;destsuffix=bbr-acs;protocol=ht
 "
 SYSTEMREADY_COMMIT_LOG ?= "${TOPDIR}/../recipes-acs/bootfs-files/files/systemready-commit.log"
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 SRCREV_FORMAT    = "edk2-test_edk2_bbr-acs"
 SRCREV_edk2 = "${AUTOREV}"
@@ -33,7 +33,7 @@ SBBR_TEST_DIR         = "${S}/bbr-acs/common/sct-tests/sbbr-tests"
 EBBR_TEST_DIR         = "${S}/bbr-acs/ebbr/sct-tests"
 UEFI_BUILD_MODE       = "DEBUG"
 EDK2_ARCH             = "AARCH64"
-UEFI_TOOLCHAIN        = "GCC5"
+UEFI_TOOLCHAIN        = "GCC"
 export PYTHON_COMMAND = "python3"
 
 # These variables were changed in edk2 commit
@@ -45,7 +45,7 @@ export AR = "${BUILD_AR}"
 export LD = "${BUILD_LD}"
 export CFLAGS = "${BUILD_CFLAGS}"
 export CPPFLAGS = "${BUILD_CPPFLAGS}"
-export LDFLAGS = "${BUILD_LFLAGS}"
+export LDFLAGS = "${BUILD_LDFLAGS}"
 
 do_configure() {
     cd ${S}/edk2-test
@@ -161,10 +161,36 @@ do_compile() {
     chmod +x SctPkg/build_bbr.sh
     # modify build_bbr.sh script to set CROSS_COMPILE to desired TARGET_PREFIX
     sed -i 's/TEMP_CROSS_COMPILE=aarch64-linux-gnu-/TEMP_CROSS_COMPILE='${TARGET_PREFIX}'/g' SctPkg/build_bbr.sh
+    # Recent EDK2 releases replaced the GCC5 tool profile with GCC.
+    sed -i 's/export TARGET_TOOLS=`get_gcc_version "$CROSS_COMPILE"gcc`/export TARGET_TOOLS=GCC/' SctPkg/build_bbr.sh
+    # Map Yocto's temporary build paths to stable debug paths in target code.
+    sed -i '/^DEFINE GCC_AARCH64_CC_FLAGS[[:space:]]*=/ s|=|= ${DEBUG_PREFIX_MAP} |' \
+        edk2/BaseTools/Conf/tools_def.template
+    # Build EDK2 BaseTools with the host toolchain.
+    export CC="${BUILD_CC}"
+    export CXX="${BUILD_CXX}"
+    export AS="${BUILD_AS}"
+    export AR="${BUILD_AR}"
+    export LD="${BUILD_LD}"
+    export CFLAGS="${BUILD_CFLAGS}"
+    export CPPFLAGS="${BUILD_CPPFLAGS}"
+    export LDFLAGS="${BUILD_LDFLAGS}"
+    export PLATFORM_FLAGS="${DEBUG_PREFIX_MAP}"
     # build ebbr
     ./SctPkg/build_bbr.sh ${EDK2_ARCH} GCC ENABLE_SECUREBOOT_TESTS
 
     echo "UEFI-SCT Build done..."
+
+    # Remove temporary Yocto build paths from EFI images before signing.
+    genfw="${S}/edk2-test/edk2/BaseTools/BinWrappers/PosixLike/GenFw"
+    find "${S}/edk2-test/Build/bbrSct/${UEFI_BUILD_MODE}_${UEFI_TOOLCHAIN}" \
+        -type f \( -name '*.efi' -o -name '*.bin' \) | while read image; do
+        if [ "$(dd if="${image}" bs=2 count=1 2>/dev/null)" = "MZ" ] && \
+           grep -a -q "${TMPDIR}" "${image}"; then
+            "${genfw}" --zero --outputfile "${image}.reproducible" "${image}"
+            mv "${image}.reproducible" "${image}"
+        fi
+    done
 
     do_signimage
 
@@ -174,6 +200,7 @@ do_compile() {
 
 do_install() {
     install -d ${D}/bbr/SCT
+    install -d ${D}${datadir}/ebbr-sct
     cd ${S}/edk2-test
     cp -r Build/bbrSct/${UEFI_BUILD_MODE}_${UEFI_TOOLCHAIN}/SctPackage${EDK2_ARCH}/${EDK2_ARCH}/* ${D}/bbr/SCT/
     cp ${S}/bbr-acs/ebbr/config/EBBRStartup.nsh ${D}/bbr/SctStartup.nsh
@@ -182,6 +209,8 @@ do_install() {
     cp SctPkg/UEFI/EfiCompliant_EBBR.ini ${D}/bbr/SCT/Dependency/EfiCompliantBBTest/EfiCompliant.ini
     cp ${S}/bbr-acs/bbsr/config/BBSR.seq ${D}/bbr/SCT/Sequence/BBSR.seq
     cp ${S}/bbr-acs/common/config/ScrtStartup.nsh ${D}/bbr/ScrtStartup.nsh
+    install -m 0644 ${S}/bbr-acs/ebbr/config/ir_bbr_fwts_tests.ini ${D}${datadir}/ebbr-sct/
+    install -m 0644 ${S}/bbr-acs/bbsr/config/bbsr_fwts_tests.ini ${D}${datadir}/ebbr-sct/
 
     echo "Install done..."
 
@@ -189,7 +218,7 @@ do_install() {
 
 
 # include files to be packaged.
-FILES:${PN} += "/bbr"
+FILES:${PN} += "/bbr ${datadir}/ebbr-sct"
 
 do_deploy() {
     # copy SCT output files to deploy directory

@@ -7,6 +7,8 @@ Added esrt_test2 which will validate if GUIDs (fw_class) in the ESRT
 table is not equal to the default U-Boot GUIDs.
 The test is applicable only for AARCH64 and --ebbr option
 
+Upstream-Status: Inappropriate [SystemReady EBBR-specific test]
+
 Signed-off-by: G Edhaya Chandran <edhaya.chandran@arm.com>
 ---
  src/uefi/esrt/esrt.c | 65 ++++++++++++++++++++++++++++++++++++++++++++

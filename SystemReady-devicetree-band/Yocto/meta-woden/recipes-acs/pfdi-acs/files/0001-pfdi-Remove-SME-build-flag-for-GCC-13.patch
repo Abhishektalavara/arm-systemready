@@ -1,3 +1,5 @@
+Upstream-Status: Inappropriate [local GCC 13 compatibility workaround]
+
 diff --git a/val/ValLib.inf b/val/ValLib.inf
 index 09c043a..030d6cf 100644
 --- a/val/ValLib.inf

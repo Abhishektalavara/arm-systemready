@@ -1,3 +1,5 @@
+Upstream-Status: Inappropriate [SystemReady-specific test-result policy]
+
 diff --git a/src/smccc/smccc.c b/src/smccc/smccc.c
 index 307e7ebd..196cf7da 100644
 --- a/src/smccc/smccc.c

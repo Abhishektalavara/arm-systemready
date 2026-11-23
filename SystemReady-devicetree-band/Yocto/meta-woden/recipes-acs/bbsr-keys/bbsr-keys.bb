@@ -1,7 +1,7 @@
 LICENSE = "CLOSED"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 inherit deploy
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 DEPENDS += "\
     efitools-native \

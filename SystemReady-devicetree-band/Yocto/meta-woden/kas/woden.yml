@@ -4,16 +4,27 @@ header:
 repos:
   meta-woden:
 
-  poky:
-    url: https://git.yoctoproject.org/git/poky
-    refspec: scarthgap
+  bitbake:
+    url: https://git.openembedded.org/bitbake
+    branch: "2.18"
+    layers:
+      .: disabled
+
+  openembedded-core:
+    url: https://git.openembedded.org/openembedded-core
+    branch: wrynose
     layers:
       meta:
+
+  meta-yocto:
+    url: https://git.yoctoproject.org/meta-yocto
+    branch: wrynose
+    layers:
       meta-yocto-bsp :
 
   meta-arm:
     url: https://git.yoctoproject.org/git/meta-arm
-    refspec: scarthgap
+    branch: wrynose
     layers:
       meta-arm:
       meta-arm-bsp:
@@ -21,7 +32,7 @@ repos:
 
   meta-openembedded:
     url: https://git.openembedded.org/meta-openembedded
-    refspec: scarthgap
+    branch: wrynose
     layers:
       meta-oe:
       meta-perl:
@@ -29,13 +40,13 @@ repos:
 
   meta-clang:
     url: https://github.com/kraj/meta-clang.git
-    refspec: scarthgap
+    branch: wrynose
     layers:
       .:
 
   meta-secure-core:
     url: https://github.com/Wind-River/meta-secure-core
-    refspec: scarthgap
+    branch: wrynose
     layers:
       meta-secure-core-common:
       meta-efi-secure-boot:

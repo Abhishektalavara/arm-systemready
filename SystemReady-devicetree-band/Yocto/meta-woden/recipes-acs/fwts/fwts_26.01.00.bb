@@ -5,17 +5,16 @@ HOMEPAGE = "https://wiki.ubuntu.com/Kernel/Reference/fwts"
 LICENSE = "GPL-2.0-or-later"
 LIC_FILES_CHKSUM = "file://src/main.c;beginline=1;endline=16;md5=79533a427253d19fae2d2c094ebcf28a"
 
-S = "${WORKDIR}/${BP}/fwts-${PV}"
-
-SRC_URI = "https://github.com/fwts/fwts/archive/refs/tags/V${PV}.tar.gz;subdir=${BP} \
+SRC_URI = "git://github.com/fwts/fwts.git;protocol=https;nobranch=1 \
            file://0001-Add-correct-printf-qualifier-for-off_t.patch \
            file://0004-Define-__SWORD_TYPE-if-not-defined-by-libc.patch \
            file://0005-Undefine-PAGE_SIZE.patch \
            file://0001-uefi-esrt-Added-esrt_test2-for-EBBR.patch \
            file://0007-smccc-downgrade-fails-to-warnings.patch \
+           file://0008-fwts-devicetree-preserve-strstr-const.patch \
            "
 
-SRC_URI[sha256sum] = "25565fd007b378bf29581eb0bc36a03a2f0c49326bb6084f980fee9c5921f289"
+SRCREV = "f299f280f2b1ceb22a6cc558aea9703ac61523c7"
 
 COMPATIBLE_HOST = "(i.86|x86_64|aarch64|powerpc64).*-linux"
 
@@ -44,6 +43,9 @@ do_compile:append() {
             M="${SMCCC_SRC_DIR}" \
             ARCH="${KERNEL_ARCH}" \
             CROSS_COMPILE="${TARGET_PREFIX}" \
+            KCFLAGS="${DEBUG_PREFIX_MAP} \
+                -ffile-prefix-map=${STAGING_KERNEL_DIR}=${KERNEL_SRC_PATH} \
+                -ffile-prefix-map=${STAGING_KERNEL_BUILDDIR}=${KERNEL_SRC_PATH}" \
             modules
     else
         bbwarn "SMCCC source directory not found: ${SMCCC_SRC_DIR}"

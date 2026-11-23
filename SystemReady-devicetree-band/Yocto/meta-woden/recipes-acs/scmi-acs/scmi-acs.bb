@@ -10,7 +10,7 @@ PR = "r0"
 SRC_URI = "git://git.gitlab.arm.com/tests/scmi-tests.git;protocol=https;branch=master;destsuffix=scmi-tests"
 SRCREV = "${AUTOREV}"
 
-S = "${WORKDIR}/scmi-tests"
+S = "${UNPACKDIR}/scmi-tests"
 DEPENDS += "virtual/libc"
 PARALLEL_MAKE = "-j1"
 SCMI_INSTALL_DIR = "${datadir}/scmi-tests"

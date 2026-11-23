@@ -1,3 +1,5 @@
+Upstream-Status: Inappropriate [SystemReady-specific version banner]
+
 diff --git a/apps/uefi/pfdi_main.c b/apps/uefi/pfdi_main.c
 index 771fee6..f0d00b5 100644
 --- a/apps/uefi/pfdi_main.c
